@@ -1,0 +1,4 @@
+Flask==3.0.0
+SQLAlchemy==2.0.25
+pandas==2.3.3
+reportlab==4.0.9

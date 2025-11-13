@@ -1,0 +1,27 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Editar Ordem de Serviço</h2>
+
+<form method="POST">
+  <label>Número OS:</label>
+  <input type="text" name="numero_os" value="{{ os_item.numero_os }}"><br>
+
+  <label>Cliente:</label>
+  <input type="text" name="cliente" value="{{ os_item.cliente }}" required><br>
+
+  <label>Vendedor:</label>
+  <input type="text" name="vendedor" value="{{ os_item.vendedor }}" required><br>
+
+  <label>Status:</label>
+  <select name="status" required>
+    <option value="recebida" {% if os_item.status.value == 'recebida' %}selected{% endif %}>Recebida</option>
+    <option value="faltante" {% if os_item.status.value == 'faltante' %}selected{% endif %}>Faltante</option>
+  </select><br>
+
+  <label>Observação:</label>
+  <input type="text" name="observacao" value="{{ os_item.observacao or '' }}"><br><br>
+
+  <button type="submit">Salvar Alterações</button>
+  <a href="/" style="margin-left:10px;">Cancelar</a>
+</form>
+{% endblock %}

@@ -1,0 +1,8 @@
+=== RECEBIDAS ===
+Número OS,Cliente,Vendedor,Hora,Observação
+9455,teste1,luizingridmateus,16:43,
+9456,teste2,luizingridmateus,16:43,
+
+=== FALTANTES ===
+Número OS,Cliente,Vendedor,Hora,Observação
+9457,teste3,luizingridmateus,16:44,os errada

@@ -1,0 +1,85 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Ordens de Serviço — {{ hoje.strftime('%d/%m/%Y') }}</h2>
+
+<form method="POST" action="{{ url_for('add_ordem') }}">
+  <input name="numero_os" placeholder="Número OS" required>
+  <input name="cliente" placeholder="Cliente" required>
+  <input name="vendedor" placeholder="Vendedor" required>
+  <select name="status">
+    <option value="recebida">Recebida</option>
+    <option value="faltante">Faltante</option>
+  </select>
+  <input name="observacao" placeholder="Observação (opcional)">
+  <button type="submit">Registrar</button>
+</form>
+
+<h3>🟢 Ordens Recebidas</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Número OS</th>
+      <th>Cliente</th>
+      <th>Vendedor</th>
+      <th>Hora</th>
+      <th>Observação</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for os in recebidas %}
+    <tr>
+      <td>{{ os.numero_os }}</td>
+      <td>{{ os.cliente }}</td>
+      <td>{{ os.vendedor }}</td>
+      <td>{{ os.data_hora_registro.strftime('%H:%M') }}</td>
+      <td>{{ os.observacao or '' }}</td>
+      <td>
+        <a href="{{ url_for('editar', id=os.id) }}">Editar</a>
+        <form action="{{ url_for('remover_os', os_id=os.id) }}" method="POST" style="display:inline;">
+          <button type="submit" onclick="return confirm('Tem certeza que deseja remover esta OS?')">Remover</button>
+        </form>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6">Nenhuma OS recebida hoje.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+
+
+<h3>🔴 Ordens Faltantes</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Número OS</th>
+      <th>Cliente</th>
+      <th>Vendedor</th>
+      <th>Hora</th>
+      <th>Observação</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for os in faltantes %}
+    <tr>
+      <td>{{ os.numero_os }}</td>
+      <td>{{ os.cliente }}</td>
+      <td>{{ os.vendedor }}</td>
+      <td>{{ os.data_hora_registro.strftime('%H:%M') }}</td>
+      <td>{{ os.observacao or '' }}</td>
+      <td>
+        <a href="{{ url_for('editar', id=os.id) }}">Editar</a>
+        <a href="{{ url_for('update_os', os_id=os.id) }}">Marcar Recebida</a> |
+        <form action="{{ url_for('remover_os', os_id=os.id) }}" method="POST" style="display:inline;">
+          <button type="submit" onclick="return confirm('Tem certeza que deseja remover esta OS?')">Remover</button>
+        </form>
+      </td>
+    </tr>
+  {% else %}
+    <tr><td colspan="6">Nenhuma OS faltante.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+{% endblock %}

@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+<h2>Histórico de Ordens de Serviço</h2>
+
+<form method="GET" action="{{ url_for('historico') }}" style="margin-bottom: 20px;">
+  <label for="data">Filtrar por data:</label>
+  <input type="date" id="data" name="data" value="{{ filtro_data }}">
+  <button type="submit">Filtrar</button>
+  <a href="{{ url_for('historico') }}" style="margin-left: 10px;">Ver todas</a>
+</form>
+
+<table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+  <thead>
+    <tr>
+      <th>Data</th>
+      <th>Hora</th>
+      <th>Número OS</th>
+      <th>Cliente</th>
+      <th>Vendedor</th>
+      <th>Status</th>
+      <th>Observação</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for os in registros %}
+    <tr>
+      <td>{{ os.data_hora_registro.strftime('%d/%m/%Y') }}</td>
+      <td>{{ os.data_hora_registro.strftime('%H:%M') }}</td>
+      <td>{{ os.numero_os }}</td>
+      <td>{{ os.cliente }}</td>
+      <td>{{ os.vendedor }}</td>
+      <td>{{ os.status.value }}</td>
+      <td>{{ os.observacao or '' }}</td>
+    </tr>
+  {% else %}
+    <tr><td colspan="8">Nenhuma ordem encontrada.</td></tr>
+  {% endfor %}
+  </tbody>
+</table>
+
+{% endblock %}
