@@ -2,12 +2,19 @@
 {% block content %}
 <h2>Relatório do dia {{ hoje.strftime('%d/%m/%Y') }}</h2>
 
-<p>Os relatórios foram gerados na pasta <b>relatorios</b>:</p>
-<ul>
-  <li><a href="{{ csv_file }}" target="_blank" class="btn-link">📄 Arquivo CSV</a></li>
-  <li><a href="{{ pdf_file }}" target="_blank" class="btn-link">🧾 Arquivo PDF</a></li>
-</ul>
+<p>O relatório foi gerado. Use os botões abaixo para fazer o download:</p>
 
-<br>
-<a href="/" class="btn btn-secondary">⬅️ Voltar</a>
+<div style="margin-top: 25px; display: flex; gap: 10px;">
+  
+  <a href="{{ url_for('download_pdf', filename=pdf_file) }}" class="btn btn-primary">
+    🧾 Baixar PDF
+  </a>
+  
+  <a href="{{ url_for('download_csv', filename=csv_file) }}" class="btn btn-secondary">
+    📄 Baixar CSV
+  </a>
+  
+</div>
+
+<a href="/" class="btn-link" style="margin-top: 40px; display: inline-block;">⬅️ Voltar</a>
 {% endblock %}

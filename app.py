@@ -1,13 +1,18 @@
-from flask import Flask, render_template, request, redirect, url_for, flash
+from flask import Flask, render_template, request, redirect, url_for, flash, send_from_directory
 from datetime import date, datetime, timedelta
 from database import OrdemServico, Session, Status
-import pandas as pd
-import os
-import io
+import csv, os, io
+from reportlab.lib.pagesizes import A4
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+from reportlab.lib.colors import HexColor
 from PIL import Image as PILImage
+import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = os.urandom(24)
+
+REPORT_DIRECTORY = os.path.join(os.getcwd(), "relatorios")
 
 
 @app.route('/')
@@ -78,15 +83,6 @@ def update_os(os_id):
 
 @app.route('/report')
 def gerar_relatorio():
-    import csv, os, io # Garante que 'io' está importado
-    from reportlab.lib.pagesizes import A4
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
-    from reportlab.lib import colors
-    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
-    from reportlab.lib.colors import HexColor
-    # Imports que você já tem:
-    from PIL import Image as PILImage
-
     session = Session()
     hoje = date.today()
 
@@ -99,11 +95,16 @@ def gerar_relatorio():
     recebidas = [o for o in ordens if o.status == Status.recebida]
     faltantes = [o for o in ordens if o.status == Status.faltante]
 
-    relatorio_dir = os.path.join(os.getcwd(), "relatorios")
-    os.makedirs(relatorio_dir, exist_ok=True)
+    os.makedirs(REPORT_DIRECTORY, exist_ok=True)
 
-    csv_path = os.path.join(relatorio_dir, f"relatorio_{hoje.strftime('%Y-%m-%d')}.csv")
-    pdf_path = os.path.join(relatorio_dir, f"relatorio_{hoje.strftime('%Y-%m-%d')}.pdf")
+    # --- NOMES DE ARQUIVO ---
+    base_filename = f"relatorio_{hoje.strftime('%Y-%m-%d')}"
+    csv_filename = f"{base_filename}.csv"
+    pdf_filename = f"{base_filename}.pdf"
+
+    # --- CAMINHOS COMPLETOS ---
+    csv_path = os.path.join(REPORT_DIRECTORY, csv_filename)
+    pdf_path = os.path.join(REPORT_DIRECTORY, pdf_filename)
 
     # --- CSV (inalterado) ---
     with open(csv_path, "w", newline='', encoding='utf-8') as csvfile:
@@ -243,8 +244,27 @@ def gerar_relatorio():
 
     return render_template('report.html', 
                            hoje=hoje,
-                           csv_file=csv_path,
-                           pdf_file=pdf_path)
+                           csv_file=csv_filename,
+                           pdf_file=pdf_filename)
+
+@app.route('/download/pdf/<path:filename>')
+def download_pdf(filename):
+    # Entrega o arquivo da pasta de relatórios como um anexo (download)
+    return send_from_directory(
+        REPORT_DIRECTORY, 
+        filename,
+        as_attachment=True,
+        mimetype='application/pdf'
+    )
+
+@app.route('/download/csv/<path:filename>')
+def download_csv(filename):
+    return send_from_directory(
+        REPORT_DIRECTORY, 
+        filename,
+        as_attachment=True,
+        mimetype='text/csv'
+    )
 
 @app.route('/editar/<int:id>', methods=['GET', 'POST'])
 def editar(id):
