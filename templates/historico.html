@@ -3,17 +3,21 @@
 <h2>Histórico de Ordens de Serviço</h2>
 
 <form method="GET" action="{{ url_for('historico') }}" class="form-horizontal" style="margin-bottom: 20px;">
-  
   <div class="form-group">
     <label for="data">Filtrar por data:</label>
     <input type="date" id="data" name="data" value="{{ filtro_data }}">
   </div>
-  
   <div class="form-group-button">
     <button type="submit" class="btn btn-primary">Filtrar</button>
     <a href="{{ url_for('historico') }}" class="btn btn-secondary">Ver todas</a>
   </div>
 </form>
+
+{% if mostrando_recentes %}
+  <h3 style="text-align: left; margin-top: 30px;">Últimas 50 OS Registradas</h3>
+{% elif filtro_data %}
+  <h3 style="text-align: left; margin-top: 30px;">Registros para {{ filtro_data }}</h3>
+{% endif %}
 
 <table>
   <thead>
@@ -30,7 +34,7 @@
   </thead>
   <tbody>
   {% for os in registros %}
-    <tr>
+    <tr class="{% if os.status.value == 'Recebida' %}row-success{% else %}row-danger{% endif %}">
       <td>{{ os.data_hora_registro.strftime('%d/%m/%Y') }}</td>
       <td>{{ os.data_hora_registro.strftime('%H:%M') }}</td>
       <td>{{ os.numero_os }}</td>

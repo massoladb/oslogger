@@ -78,9 +78,10 @@ def update_os(os_id):
 def gerar_relatorio():
     import csv, os
     from reportlab.lib.pagesizes import A4
-    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer
     from reportlab.lib import colors
-    from reportlab.lib.styles import getSampleStyleSheet
+    from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Paragraph, Spacer, Image
+    from reportlab.lib.styles import getSampleStyleSheet, ParagraphStyle
+    from reportlab.lib.colors import HexColor
 
     session = Session()
     hoje = date.today()
@@ -221,10 +222,16 @@ def historico():
         except ValueError:
             registros = []
     else:
-        registros = session.query(OrdemServico).order_by(OrdemServico.data_hora_registro.desc()).all()
+        mostrando_recentes = True
+        registros = session.query(OrdemServico).order_by(
+            OrdemServico.data_hora_registro.desc()
+        ).limit(50).all()
 
     session.close()
-    return render_template("historico.html", registros=registros, filtro_data=filtro_data or "")
+    return render_template("historico.html", 
+                           registros=registros, 
+                           filtro_data=filtro_data or "",
+                           mostrando_recentes=mostrando_recentes)
 
 
 

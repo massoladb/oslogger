@@ -5,13 +5,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>OS Logger</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="icon" href="{{ url_for('static', filename='logo.png') }}" type="image/png">
 </head>
 <body>
 
 <nav>
-    <a href="{{ url_for('index') }}">Início</a> |
-    <a href="{{ url_for('gerar_relatorio') }}">Gerar Relatório</a> |
-    <a href="{{ url_for('historico') }}">Histórico</a>
+    <a href="{{ url_for('index') }}">
+      <img src="{{ url_for('static', filename='logo.png') }}" alt="Logo" class="nav-logo">
+    </a>
+
+    <div class="nav-links">
+      <a href="{{ url_for('index') }}">Início</a>
+      <a href="{{ url_for('gerar_relatorio') }}">Gerar Relatório</a>
+      <a href="{{ url_for('historico') }}">Histórico</a>
+    </div>
 </nav>
 
 <div class="container">

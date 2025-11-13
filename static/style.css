@@ -29,11 +29,28 @@ nav {
     position: sticky;
     top: 0;
     display: flex;
-    justify-content: center;
+    justify-content: space-between; /* Para separar logo e links */
+    align-items: center; /* Alinha verticalmente */
     gap: 20px;
-    padding: 14px 0;
+    padding: 10px 40px; /* Mais padding lateral */
     box-shadow: 0 1px 3px rgba(0,0,0,0.1);
     z-index: 10;
+    max-width: 1100px; /* Alinha com o container */
+    margin: 0 auto; /* Centraliza a nav */
+    border-radius: 0 0 16px 16px; /* Arredonda cantos inferiores */
+}
+
+/* Estilo do Logo */
+.nav-logo {
+    height: 32px; /* Defina a altura desejada */
+    width: auto;
+    display: block;
+}
+
+/* Agrupador de Links */
+.nav-links {
+    display: flex;
+    gap: 20px;
 }
 
 nav a {
@@ -365,4 +382,51 @@ footer {
     font-size: 15px;
     font-style: italic;
     color: var(--apple-text-secondary);
+}
+
+/* ... (Todo o CSS anterior) ... */
+
+/* --- Títulos Coloridos (index.html) --- */
+.title-success {
+    color: var(--apple-green);
+}
+
+.title-danger {
+    color: var(--apple-red);
+}
+
+
+/* --- Linhas Coloridas (historico.html) --- */
+
+/* Usamos as cores de fundo dos alertas flash para 
+  manter a consistência. 
+*/
+.row-success {
+    background-color: #e6f7ea; /* Verde claro */
+}
+.row-danger {
+    background-color: #ffeeed; /* Vermelho claro */
+}
+
+/* Precisamos garantir que os estados de hover 
+  também sejam coloridos. 
+*/
+.row-success:hover {
+    background-color: #d1f0d9; /* Verde um pouco mais escuro */
+}
+.row-danger:hover {
+    background-color: #fcdbd9; /* Vermelho um pouco mais escuro */
+}
+
+/* Correção para os botões de link (Editar/Remover) 
+  dentro das linhas coloridas, para que mantenham 
+  suas cores originais (azul e vermelho).
+*/
+.row-success .btn-link,
+.row-danger .btn-link {
+    color: var(--apple-blue);
+}
+.row-success .btn-link-destructive,
+.row-danger .btn-link-destructive {
+    color: var(--apple-red);
 }
