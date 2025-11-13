@@ -21,3 +21,6 @@ Thumbs.db
 # VSCode / PyCharm
 .vscode/
 .idea/
+
+# Ignora a pasta de relatórios
+relatorios/
