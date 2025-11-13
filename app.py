@@ -317,6 +317,8 @@ def historico():
     session = Session()
     filtro_data = request.args.get('data')  # formato esperado: YYYY-MM-DD
 
+    mostrando_recentes = False
+
     if filtro_data:
         try:
             data_filtrada = datetime.strptime(filtro_data, "%Y-%m-%d").date()
@@ -329,10 +331,10 @@ def historico():
         except ValueError:
             registros = []
     else:
-        mostrando_recentes = True
         registros = session.query(OrdemServico).order_by(
             OrdemServico.data_hora_registro.desc()
         ).limit(50).all()
+        mostrando_recentes = True
 
     session.close()
     return render_template("historico.html", 
