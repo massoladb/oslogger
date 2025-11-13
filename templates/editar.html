@@ -2,26 +2,38 @@
 {% block content %}
 <h2>Editar Ordem de Serviço</h2>
 
-<form method="POST">
-  <label>Número OS:</label>
-  <input type="text" name="numero_os" value="{{ os_item.numero_os }}"><br>
+<form method="POST" style="max-width: 600px; margin: 0 auto;">
+  <div class="form-group" style="margin-bottom: 15px;">
+    <label>Número OS:</label>
+    <input type="text" name="numero_os" value="{{ os_item.numero_os }}">
+  </div>
 
-  <label>Cliente:</label>
-  <input type="text" name="cliente" value="{{ os_item.cliente }}" required><br>
+  <div class="form-group" style="margin-bottom: 15px;">
+    <label>Cliente:</label>
+    <input type="text" name="cliente" value="{{ os_item.cliente }}" required>
+  </div>
 
-  <label>Vendedor:</label>
-  <input type="text" name="vendedor" value="{{ os_item.vendedor }}" required><br>
+  <div class="form-group" style="margin-bottom: 15px;">
+    <label>Vendedor:</label>
+    <input type="text" name="vendedor" value="{{ os_item.vendedor }}" required>
+  </div>
 
-  <label>Status:</label>
-  <select name="status" required>
-    <option value="recebida" {% if os_item.status.value == 'recebida' %}selected{% endif %}>Recebida</option>
-    <option value="faltante" {% if os_item.status.value == 'faltante' %}selected{% endif %}>Faltante</option>
-  </select><br>
+  <div class="form-group" style="margin-bottom: 15px;">
+    <label>Status:</label>
+    <select name="status" required>
+      <option value="recebida" {% if os_item.status.value == 'recebida' %}selected{% endif %}>Recebida</option>
+      <option value="faltante" {% if os_item.status.value == 'faltante' %}selected{% endif %}>Faltante</option>
+    </select>
+  </div>
 
-  <label>Observação:</label>
-  <input type="text" name="observacao" value="{{ os_item.observacao or '' }}"><br><br>
+  <div class="form-group" style="margin-bottom: 25px;">
+    <label>Observação:</label>
+    <input type="text" name="observacao" value="{{ os_item.observacao or '' }}">
+  </div>
 
-  <button type="submit">Salvar Alterações</button>
-  <a href="/" style="margin-left:10px;">Cancelar</a>
+  <div style="display: flex; gap: 10px; justify-content: flex-end;">
+    <a href="/" class="btn btn-secondary">Cancelar</a>
+    <button type="submit" class="btn btn-primary">Salvar Alterações</button>
+  </div>
 </form>
 {% endblock %}

@@ -1,5 +1,5 @@
 from flask import Flask, render_template, request, redirect, url_for, flash
-from datetime import date, datetime
+from datetime import date, datetime, timedelta
 from database import OrdemServico, Session, Status
 import pandas as pd
 import os
@@ -12,12 +12,20 @@ app.secret_key = os.urandom(24)
 def index():
     session = Session()
     hoje = date.today()
+    ontem = hoje - timedelta(days=1)
 
     # pega as OS de hoje + faltantes de dias anteriores
     ordens = session.query(OrdemServico).filter(
         (OrdemServico.data_relatorio == hoje) |
         ((OrdemServico.status == Status.faltante) & (OrdemServico.data_relatorio < hoje))
     ).all()
+
+    # <-- Nova consulta para as OS recebidas ontem -->
+    recebidas_ontem = session.query(OrdemServico).filter(
+        OrdemServico.data_relatorio == ontem,
+        OrdemServico.status == Status.recebida
+    ).order_by(OrdemServico.data_hora_registro).all()
+
     session.close()
 
     # separa recebidas e faltantes
@@ -27,6 +35,7 @@ def index():
     return render_template('index.html', 
                            recebidas=recebidas,
                            faltantes=faltantes,
+                           recebidas_ontem=recebidas_ontem,
                            hoje=hoje)
 
 

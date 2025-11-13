@@ -2,17 +2,96 @@
 {% block content %}
 <h2>Ordens de Serviço — {{ hoje.strftime('%d/%m/%Y') }}</h2>
 
-<form method="POST" action="{{ url_for('add_ordem') }}">
-  <input name="numero_os" placeholder="Número OS" required>
-  <input name="cliente" placeholder="Cliente" required>
-  <input name="vendedor" placeholder="Vendedor" required>
-  <select name="status">
-    <option value="recebida">Recebida</option>
-    <option value="faltante">Faltante</option>
-  </select>
-  <input name="observacao" placeholder="Observação (opcional)">
-  <button type="submit">Registrar</button>
+<details class="toggle-ontem">
+  <summary>
+    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi-caret-right-fill" viewBox="0 0 16 16">
+      <path d="m12.14 8.753-5.482 4.796c-.646.566-1.658.106-1.658-.753V3.204a1 1 0 0 1 1.659-.753l5.48 4.796a1 1 0 0 1 0 1.506z"/>
+    </svg>
+    Ver OS Recebidas Ontem ({{ recebidas_ontem|length }})
+  </summary>
+  <div class="toggle-content">
+    {% if recebidas_ontem %}
+      <ul>
+        {% for os in recebidas_ontem %}
+          <li><strong>{{ os.numero_os }}</strong> - {{ os.cliente }}</li>
+        {% endfor %}
+      </ul>
+    {% else %}
+      <p>Nenhuma OS foi registrada como recebida ontem.</p>
+    {% endif %}
+  </div>
+</details>
+<form method="POST" action="{{ url_for('add_ordem') }}" class="form-horizontal">
+  
+  <div class="form-group">
+    <label>Número OS:</label>
+    <input type="text" name="numero_os" placeholder="Ex: 9587" required>
+  </div>
+  
+  <div class="form-group form-group-wide">
+    <label>Cliente:</label>
+    <input type="text" name="cliente" placeholder="Ex: Adriana Izidro" required>
+  </div>
+  
+  <div class="form-group">
+    <label>Vendedor:</label>
+    <input type="text" name="vendedor" placeholder="Ex: Mateus" required>
+  </div>
+
+  <div class="form-group" style="flex-basis: 100px;">
+    <label>Status:</label>
+    <select name="status">
+      <option value="recebida">Recebida</option>
+      <option value="faltante">Faltante</option>
+    </select>
+  </div>
+  
+  <div class="form-group form-group-wide">
+    <label>Observação:</label>
+    <input type="text" name="observacao" placeholder="(Opcional)">
+  </div>
+  
+  <div class="form-group-button">
+    <button type="submit" class="btn btn-primary">Registrar</button>
+  </div>
 </form>
+
+<hr style="border:none; border-top: 1px solid #e0e0e0; margin: 40px 0;">
+
+
+<h3>🔴 Ordens Faltantes</h3>
+<table>
+  <thead>
+    <tr>
+      <th>Número OS</th>
+      <th>Cliente</th>
+      <th>Vendedor</th>
+      <th>Hora</th>
+      <th>Observação</th>
+      <th>Ações</th>
+    </tr>
+  </thead>
+  <tbody>
+  {% for os in faltantes %}
+  <tr>
+      <td>{{ os.numero_os }}</td>
+      <td>{{ os.cliente }}</td>
+      <td>{{ os.vendedor }}</td>
+      <td>{{ os.data_hora_registro.strftime('%H:%M') }}</td>
+      <td>{{ os.observacao or '' }}</td>
+      <td>
+        <a href="{{ url_for('editar', id=os.id) }}" class="btn-link">Editar</a>
+        <a href="{{ url_for('update_os', os_id=os.id) }}" class="btn-link-positive">Marcar Recebida</a>
+        <form action="{{ url_for('remover_os', os_id=os.id) }}" method="POST" style="display:inline;">
+          <button type="submit" class="btn-link-destructive" onclick="return confirm('Tem certeza que deseja remover esta OS?')">Remover</button>
+        </form>
+      </td>
+    </tr>
+    {% else %}
+    <tr><td colspan="6">Nenhuma OS faltante.</td></tr>
+    {% endfor %}
+  </tbody>
+</table>
 
 <h3>🟢 Ordens Recebidas</h3>
 <table>
@@ -35,50 +114,14 @@
       <td>{{ os.data_hora_registro.strftime('%H:%M') }}</td>
       <td>{{ os.observacao or '' }}</td>
       <td>
-        <a href="{{ url_for('editar', id=os.id) }}">Editar</a>
+        <a href="{{ url_for('editar', id=os.id) }}" class="btn-link">Editar</a>
         <form action="{{ url_for('remover_os', os_id=os.id) }}" method="POST" style="display:inline;">
-          <button type="submit" onclick="return confirm('Tem certeza que deseja remover esta OS?')">Remover</button>
+          <button type="submit" class="btn-link-destructive" onclick="return confirm('Tem certeza que deseja remover esta OS?')">Remover</button>
         </form>
       </td>
     </tr>
   {% else %}
     <tr><td colspan="6">Nenhuma OS recebida hoje.</td></tr>
-  {% endfor %}
-  </tbody>
-</table>
-
-
-
-<h3>🔴 Ordens Faltantes</h3>
-<table>
-  <thead>
-    <tr>
-      <th>Número OS</th>
-      <th>Cliente</th>
-      <th>Vendedor</th>
-      <th>Hora</th>
-      <th>Observação</th>
-      <th>Ações</th>
-    </tr>
-  </thead>
-  <tbody>
-  {% for os in faltantes %}
-    <tr>
-      <td>{{ os.numero_os }}</td>
-      <td>{{ os.cliente }}</td>
-      <td>{{ os.vendedor }}</td>
-      <td>{{ os.data_hora_registro.strftime('%H:%M') }}</td>
-      <td>{{ os.observacao or '' }}</td>
-      <td>
-        <a href="{{ url_for('editar', id=os.id) }}">Editar</a>
-        <a href="{{ url_for('update_os', os_id=os.id) }}">Marcar Recebida</a> |
-        <form action="{{ url_for('remover_os', os_id=os.id) }}" method="POST" style="display:inline;">
-          <button type="submit" onclick="return confirm('Tem certeza que deseja remover esta OS?')">Remover</button>
-        </form>
-      </td>
-    </tr>
-  {% else %}
-    <tr><td colspan="6">Nenhuma OS faltante.</td></tr>
   {% endfor %}
   </tbody>
 </table>

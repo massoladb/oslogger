@@ -2,14 +2,20 @@
 {% block content %}
 <h2>Histórico de Ordens de Serviço</h2>
 
-<form method="GET" action="{{ url_for('historico') }}" style="margin-bottom: 20px;">
-  <label for="data">Filtrar por data:</label>
-  <input type="date" id="data" name="data" value="{{ filtro_data }}">
-  <button type="submit">Filtrar</button>
-  <a href="{{ url_for('historico') }}" style="margin-left: 10px;">Ver todas</a>
+<form method="GET" action="{{ url_for('historico') }}" class="form-horizontal" style="margin-bottom: 20px;">
+  
+  <div class="form-group">
+    <label for="data">Filtrar por data:</label>
+    <input type="date" id="data" name="data" value="{{ filtro_data }}">
+  </div>
+  
+  <div class="form-group-button">
+    <button type="submit" class="btn btn-primary">Filtrar</button>
+    <a href="{{ url_for('historico') }}" class="btn btn-secondary">Ver todas</a>
+  </div>
 </form>
 
-<table border="1" cellpadding="6" cellspacing="0" style="width:100%; border-collapse:collapse;">
+<table>
   <thead>
     <tr>
       <th>Data</th>
@@ -32,6 +38,12 @@
       <td>{{ os.vendedor }}</td>
       <td>{{ os.status.value }}</td>
       <td>{{ os.observacao or '' }}</td>
+      <td>
+        <a href="{{ url_for('editar', id=os.id) }}" class="btn-link">Editar</a>
+        <form action="{{ url_for('remover_os', os_id=os.id) }}" method="POST" style="display:inline;">
+          <button type="submit" class="btn-link-destructive" onclick="return confirm('Tem certeza que deseja remover esta OS?')">Remover</button>
+        </form>
+      </td>
     </tr>
   {% else %}
     <tr><td colspan="8">Nenhuma ordem encontrada.</td></tr>
