@@ -21,10 +21,10 @@ def index():
     hoje = date.today()
     ontem = hoje - timedelta(days=1)
 
-    # pega as OS de hoje + faltantes de dias anteriores
+    # Pega as OS de hoje + faltantes de dias anteriores (Correção aplicada)
     ordens = session.query(OrdemServico).filter(
-        (OrdemServico.data_relatorio == hoje) |
-        ((OrdemServico.status == Status.faltante) & (OrdemServico.data_relatorio < hoje))
+        (OrdemServico.data_relatorio == hoje) | 
+        (OrdemServico.status == Status.faltante)
     ).all()
 
     # <-- Nova consulta para as OS recebidas ontem -->
@@ -86,9 +86,9 @@ def gerar_relatorio():
     session = Session()
     hoje = date.today()
 
-    # ... (Query do banco de dados permanece a mesma) ...
     ordens = session.query(OrdemServico).filter(
-        OrdemServico.data_relatorio == hoje
+        (OrdemServico.data_relatorio == hoje) |
+        (OrdemServico.status == Status.faltante)
     ).all()
     session.close()
 
